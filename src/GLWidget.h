@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Renderer.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <memory>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLWidget>
@@ -28,13 +29,13 @@ protected:
 
 private:
     void resetCamera();
+    glm::vec3 mapToSphere(const QPoint &pos) const;
 
     Renderer m_renderer;
     std::unique_ptr<Model> m_model;
 
-    // camera
-    float m_rotX = 20.0f;
-    float m_rotY = -30.0f;
+    // camera — arcball rotation stored as quaternion
+    glm::quat m_rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     float m_panX = 0.0f;
     float m_panY = 0.0f;
     float m_distance = 3.0f;
