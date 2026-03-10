@@ -3,15 +3,25 @@
     "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
     "configurePresets": [
         {
-            "name": "base",
+            "name": "base-ninja",
             "hidden": true,
             "binaryDir": "${sourceDir}/build/${presetName}",
             "generator": "Ninja"
         },
         {
+            "name": "vcpkg",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                }
+            }
+        },
+        {
             "name": "linux",
             "displayName": "Linux (system packages)",
-            "inherits": "base",
+            "inherits": "base-ninja",
             "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
         },
         {
@@ -27,48 +37,45 @@
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
         },
         {
-            "name": "vcpkg",
-            "hidden": true,
-            "inherits": "base",
-            "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": {
-                    "type": "FILEPATH",
-                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-                }
-            }
+            "name": "linux-vcpkg",
+            "displayName": "Linux (vcpkg)",
+            "inherits": ["base-ninja", "vcpkg"],
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
         },
         {
             "name": "windows",
-            "displayName": "Windows (vcpkg)",
+            "displayName": "Windows (vcpkg, VS generator)",
             "inherits": "vcpkg",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Visual Studio 17 2022",
+            "architecture": { "value": "x64", "strategy": "set" },
             "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
         },
         {
             "name": "windows-debug",
             "displayName": "Windows Debug",
-            "inherits": "windows",
-            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+            "inherits": "windows"
         },
         {
             "name": "windows-release",
             "displayName": "Windows Release",
-            "inherits": "windows",
-            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+            "inherits": "windows"
         },
         {
-            "name": "linux-vcpkg",
-            "displayName": "Linux (vcpkg)",
-            "inherits": "vcpkg",
-            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
+            "name": "windows-ninja",
+            "displayName": "Windows (vcpkg, Ninja — run from VS Developer Prompt)",
+            "inherits": ["base-ninja", "vcpkg"],
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
         }
     ],
     "buildPresets": [
         { "name": "linux",            "configurePreset": "linux" },
         { "name": "linux-debug",      "configurePreset": "linux-debug" },
         { "name": "linux-release",    "configurePreset": "linux-release" },
-        { "name": "windows",          "configurePreset": "windows" },
-        { "name": "windows-debug",    "configurePreset": "windows-debug" },
-        { "name": "windows-release",  "configurePreset": "windows-release" },
-        { "name": "linux-vcpkg",      "configurePreset": "linux-vcpkg" }
+        { "name": "linux-vcpkg",      "configurePreset": "linux-vcpkg" },
+        { "name": "windows",          "configurePreset": "windows", "configuration": "Release" },
+        { "name": "windows-debug",    "configurePreset": "windows-debug", "configuration": "Debug" },
+        { "name": "windows-release",  "configurePreset": "windows-release", "configuration": "Release" },
+        { "name": "windows-ninja",    "configurePreset": "windows-ninja" }
     ]
 }
