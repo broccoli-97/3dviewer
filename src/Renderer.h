@@ -2,16 +2,16 @@
 
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
-#include <glm/glm.hpp>
 
-class Model;
+class Camera;
+class Scene;
 
 class Renderer
 {
 public:
     bool init(QOpenGLFunctions_3_3_Core *gl);
-    void render(QOpenGLFunctions_3_3_Core *gl, const Model &model,
-                const glm::mat4 &projection, const glm::mat4 &view);
+    void render(QOpenGLFunctions_3_3_Core *gl, const Scene &scene,
+                const Camera &camera, float aspect);
     void cleanup();
 
 private:

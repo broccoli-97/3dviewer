@@ -1,5 +1,6 @@
 #include "Renderer.h"
-#include "Model.h"
+#include "Camera.h"
+#include "Scene.h"
 
 #include <QFile>
 #include <glm/gtc/matrix_transform.hpp>
@@ -37,26 +38,29 @@ bool Renderer::init(QOpenGLFunctions_3_3_Core *gl)
     return true;
 }
 
-void Renderer::render(QOpenGLFunctions_3_3_Core *gl, const Model &model,
-                      const glm::mat4 &projection, const glm::mat4 &view)
+void Renderer::render(QOpenGLFunctions_3_3_Core *gl, const Scene &scene,
+                      const Camera &camera, float aspect)
 {
-    glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), -model.getCenter());
-    glm::mat3 normMat  = glm::transpose(glm::inverse(glm::mat3(modelMat)));
-    glm::vec3 viewPos  = glm::vec3(glm::inverse(view) * glm::vec4(0, 0, 0, 1));
+    glm::mat4 projection = camera.projectionMatrix(aspect);
+    glm::mat4 view       = camera.viewMatrix();
+    glm::mat4 modelMat   = glm::translate(glm::mat4(1.0f), -scene.modelCenter());
+    glm::mat3 normMat    = glm::transpose(glm::inverse(glm::mat3(modelMat)));
+    glm::vec3 viewPos    = camera.position();
+    glm::vec3 lightDir   = scene.lightDirection();
+    glm::vec3 objColor   = scene.objectColor();
 
     m_shader->bind();
 
-    gl->glUniformMatrix4fv(m_locProjection, 1, GL_FALSE, glm::value_ptr(projection));
-    gl->glUniformMatrix4fv(m_locView, 1, GL_FALSE, glm::value_ptr(view));
-    gl->glUniformMatrix4fv(m_locModel, 1, GL_FALSE, glm::value_ptr(modelMat));
+    gl->glUniformMatrix4fv(m_locProjection,   1, GL_FALSE, glm::value_ptr(projection));
+    gl->glUniformMatrix4fv(m_locView,         1, GL_FALSE, glm::value_ptr(view));
+    gl->glUniformMatrix4fv(m_locModel,        1, GL_FALSE, glm::value_ptr(modelMat));
     gl->glUniformMatrix3fv(m_locNormalMatrix, 1, GL_FALSE, glm::value_ptr(normMat));
 
-    glm::vec3 lightDir(-0.3f, -1.0f, -0.5f);
-    gl->glUniform3fv(m_locLightDir, 1, glm::value_ptr(lightDir));
-    gl->glUniform3fv(m_locViewPos, 1, glm::value_ptr(viewPos));
-    gl->glUniform3f(m_locObjectColor, 0.7f, 0.75f, 0.8f);
+    gl->glUniform3fv(m_locLightDir,    1, glm::value_ptr(lightDir));
+    gl->glUniform3fv(m_locViewPos,     1, glm::value_ptr(viewPos));
+    gl->glUniform3fv(m_locObjectColor, 1, glm::value_ptr(objColor));
 
-    model.draw(gl);
+    scene.draw(gl);
 
     m_shader->release();
 }

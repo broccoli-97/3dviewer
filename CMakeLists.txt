@@ -15,6 +15,8 @@ add_executable(3dviewer
     src/main.cpp
     src/MainWindow.cpp
     src/GLWidget.cpp
+    src/Camera.cpp
+    src/Scene.cpp
     src/Renderer.cpp
     src/Mesh.cpp
     src/Model.cpp
