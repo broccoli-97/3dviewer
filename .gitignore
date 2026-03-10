@@ -1,0 +1,25 @@
+# Build
+build/
+
+# IDE / editor
+.cache/
+.vscode/
+.idea/
+*.swp
+*~
+
+# Compiled objects
+*.o
+*.obj
+*.exe
+
+# vcpkg installed packages (manifest mode regenerates these)
+vcpkg/
+vcpkg_installed/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# CMake generated
+CMakeUserPresets.json

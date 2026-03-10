@@ -1,0 +1,74 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Ninja"
+        },
+        {
+            "name": "linux",
+            "displayName": "Linux (system packages)",
+            "inherits": "base",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
+        },
+        {
+            "name": "linux-debug",
+            "displayName": "Linux Debug",
+            "inherits": "linux",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "linux-release",
+            "displayName": "Linux Release",
+            "inherits": "linux",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        },
+        {
+            "name": "vcpkg",
+            "hidden": true,
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                }
+            }
+        },
+        {
+            "name": "windows",
+            "displayName": "Windows (vcpkg)",
+            "inherits": "vcpkg",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+        },
+        {
+            "name": "windows-debug",
+            "displayName": "Windows Debug",
+            "inherits": "windows",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "windows-release",
+            "displayName": "Windows Release",
+            "inherits": "windows",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        },
+        {
+            "name": "linux-vcpkg",
+            "displayName": "Linux (vcpkg)",
+            "inherits": "vcpkg",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
+        }
+    ],
+    "buildPresets": [
+        { "name": "linux",            "configurePreset": "linux" },
+        { "name": "linux-debug",      "configurePreset": "linux-debug" },
+        { "name": "linux-release",    "configurePreset": "linux-release" },
+        { "name": "windows",          "configurePreset": "windows" },
+        { "name": "windows-debug",    "configurePreset": "windows-debug" },
+        { "name": "windows-release",  "configurePreset": "windows-release" },
+        { "name": "linux-vcpkg",      "configurePreset": "linux-vcpkg" }
+    ]
+}

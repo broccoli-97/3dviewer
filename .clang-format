@@ -1,0 +1,53 @@
+BasedOnStyle: LLVM
+
+Language: Cpp
+Standard: c++17
+ColumnLimit: 100
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+IndentCaseLabels: false
+NamespaceIndentation: None
+
+# Braces
+BreakBeforeBraces: Linux
+# Linux = attach to control statements, break before functions/classes
+
+# Alignment
+AlignAfterOpenBracket: Align
+AlignOperands: Align
+AlignTrailingComments: true
+
+# Short forms
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+
+# Includes
+SortIncludes: CaseInsensitive
+IncludeBlocks: Preserve
+
+# Pointers / References
+PointerAlignment: Right
+ReferenceAlignment: Right
+DerivePointerAlignment: false
+
+# Spaces
+SpaceAfterCStyleCast: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpacesInAngles: Never
+SpacesInParentheses: false
+
+# Misc
+BinPackArguments: false
+BinPackParameters: false
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+PackConstructorInitializers: NextLine
