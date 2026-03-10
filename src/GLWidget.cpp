@@ -6,64 +6,6 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
-// --------------- shaders ---------------
-
-static const char *kVertSrc = R"glsl(
-#version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-uniform mat3 normalMatrix;
-
-out vec3 FragPos;
-out vec3 Normal;
-
-void main() {
-    FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal  = normalMatrix * aNormal;
-    gl_Position = projection * view * vec4(FragPos, 1.0);
-}
-)glsl";
-
-static const char *kFragSrc = R"glsl(
-#version 330 core
-in vec3 FragPos;
-in vec3 Normal;
-
-uniform vec3 lightDir;
-uniform vec3 viewPos;
-uniform vec3 objectColor;
-
-out vec4 FragColor;
-
-void main() {
-    vec3 norm = normalize(Normal);
-    vec3 ld   = normalize(-lightDir);
-
-    // two-sided lighting
-    if (dot(norm, ld) < 0.0)
-        norm = -norm;
-
-    // ambient
-    vec3 ambient = 0.15 * vec3(1.0);
-
-    // diffuse
-    float diff = max(dot(norm, ld), 0.0);
-    vec3 diffuse = diff * vec3(1.0);
-
-    // specular (Blinn-Phong)
-    vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 half_   = normalize(ld + viewDir);
-    float spec   = pow(max(dot(norm, half_), 0.0), 64.0);
-    vec3 specular = 0.4 * spec * vec3(1.0);
-
-    FragColor = vec4((ambient + diffuse + specular) * objectColor, 1.0);
-}
-)glsl";
-
 // --------------- GLWidget ---------------
 
 GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent)
@@ -75,7 +17,7 @@ GLWidget::~GLWidget()
 {
     makeCurrent();
     if (m_model) m_model->cleanup(this);
-    delete m_shader;
+    m_renderer.cleanup();
     doneCurrent();
 }
 
@@ -113,10 +55,7 @@ void GLWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
 
-    m_shader = new QOpenGLShaderProgram(this);
-    m_shader->addShaderFromSourceCode(QOpenGLShader::Vertex, kVertSrc);
-    m_shader->addShaderFromSourceCode(QOpenGLShader::Fragment, kFragSrc);
-    m_shader->link();
+    m_renderer.init(this);
 
     if (m_model) m_model->setup(this);
     m_glReady = true;
@@ -144,27 +83,7 @@ void GLWidget::paintGL()
     view = glm::rotate(view, glm::radians(m_rotX), glm::vec3(1, 0, 0));
     view = glm::rotate(view, glm::radians(m_rotY), glm::vec3(0, 1, 0));
 
-    glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), -m_model->getCenter());
-    glm::mat3 normMat = glm::transpose(glm::inverse(glm::mat3(modelMat)));
-    glm::vec3 viewPos = glm::vec3(glm::inverse(view) * glm::vec4(0, 0, 0, 1));
-
-    m_shader->bind();
-
-    glUniformMatrix4fv(
-        m_shader->uniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniformMatrix4fv(m_shader->uniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(m_shader->uniformLocation("model"), 1, GL_FALSE, glm::value_ptr(modelMat));
-    glUniformMatrix3fv(
-        m_shader->uniformLocation("normalMatrix"), 1, GL_FALSE, glm::value_ptr(normMat));
-
-    glm::vec3 lightDir(-0.3f, -1.0f, -0.5f);
-    glUniform3fv(m_shader->uniformLocation("lightDir"), 1, glm::value_ptr(lightDir));
-    glUniform3fv(m_shader->uniformLocation("viewPos"), 1, glm::value_ptr(viewPos));
-    glUniform3f(m_shader->uniformLocation("objectColor"), 0.7f, 0.75f, 0.8f);
-
-    m_model->draw(this);
-
-    m_shader->release();
+    m_renderer.render(this, *m_model, projection, view);
 }
 
 // --------------- mouse interaction ---------------

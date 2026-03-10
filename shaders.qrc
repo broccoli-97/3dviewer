@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file alias="phong.vs">shaders/phong.vs</file>
+        <file alias="phong.fs">shaders/phong.fs</file>
+    </qresource>
+</RCC>

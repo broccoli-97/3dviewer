@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Model.h"
+#include "Renderer.h"
 #include <glm/glm.hpp>
 #include <memory>
 #include <QOpenGLFunctions_3_3_Core>
-#include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
@@ -29,7 +29,7 @@ protected:
 private:
     void resetCamera();
 
-    QOpenGLShaderProgram *m_shader = nullptr;
+    Renderer m_renderer;
     std::unique_ptr<Model> m_model;
 
     // camera

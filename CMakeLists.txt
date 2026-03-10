@@ -9,12 +9,16 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 find_package(assimp REQUIRED)
 find_package(OpenGL REQUIRED)
 
+qt_add_resources(SHADER_RESOURCES shaders.qrc)
+
 add_executable(3dviewer
     src/main.cpp
     src/MainWindow.cpp
     src/GLWidget.cpp
+    src/Renderer.cpp
     src/Mesh.cpp
     src/Model.cpp
+    ${SHADER_RESOURCES}
 )
 
 target_link_libraries(3dviewer PRIVATE
