@@ -16,4 +16,5 @@ private slots:
 
 private:
     GLWidget *glWidget;
+    QAction *m_wireframeAction = nullptr;
 };

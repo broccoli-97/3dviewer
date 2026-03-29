@@ -26,6 +26,9 @@ public:
     void draw(QOpenGLFunctions_3_3_Core *gl) const;
     void cleanup(QOpenGLFunctions_3_3_Core *gl);
 
+    size_t vertexCount() const { return m_vertices.size(); }
+    size_t triangleCount() const { return m_indices.size() / 3; }
+
 private:
     std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;

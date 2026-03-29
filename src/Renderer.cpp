@@ -49,6 +49,9 @@ void Renderer::render(QOpenGLFunctions_3_3_Core *gl, const Scene &scene,
     glm::vec3 lightDir   = scene.lightDirection();
     glm::vec3 objColor   = scene.objectColor();
 
+    if (m_wireframe)
+        gl->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     m_shader->bind();
 
     gl->glUniformMatrix4fv(m_locProjection,   1, GL_FALSE, glm::value_ptr(projection));
@@ -63,6 +66,9 @@ void Renderer::render(QOpenGLFunctions_3_3_Core *gl, const Scene &scene,
     scene.draw(gl);
 
     m_shader->release();
+
+    if (m_wireframe)
+        gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderer::cleanup()

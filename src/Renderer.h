@@ -14,8 +14,12 @@ public:
                 const Camera &camera, float aspect);
     void cleanup();
 
+    void setWireframe(bool enabled) { m_wireframe = enabled; }
+    bool isWireframe() const { return m_wireframe; }
+
 private:
     QOpenGLShaderProgram *m_shader = nullptr;
+    bool m_wireframe = false;
 
     // cached uniform locations
     int m_locModel = -1;

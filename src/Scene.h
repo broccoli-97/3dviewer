@@ -16,6 +16,9 @@ public:
     glm::vec3 modelCenter() const;
     float modelExtent() const;
 
+    size_t vertexCount() const;
+    size_t triangleCount() const;
+
     glm::vec3 lightDirection() const { return m_lightDir; }
     glm::vec3 objectColor() const { return m_objectColor; }
 

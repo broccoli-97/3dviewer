@@ -16,6 +16,12 @@ public:
 
     bool loadModel(const std::string &path);
 
+    void setWireframe(bool enabled);
+    bool isWireframe() const;
+
+    size_t vertexCount() const;
+    size_t triangleCount() const;
+
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;

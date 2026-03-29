@@ -40,3 +40,13 @@ float Scene::modelExtent() const
 {
     return m_model ? m_model->getExtent() : 1.0f;
 }
+
+size_t Scene::vertexCount() const
+{
+    return m_model ? m_model->vertexCount() : 0;
+}
+
+size_t Scene::triangleCount() const
+{
+    return m_model ? m_model->triangleCount() : 0;
+}

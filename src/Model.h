@@ -23,6 +23,9 @@ public:
     float getExtent() const { return m_extent; }
     bool isLoaded() const { return !m_meshes.empty(); }
 
+    size_t vertexCount() const;
+    size_t triangleCount() const;
+
 private:
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh);

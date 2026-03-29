@@ -28,6 +28,27 @@ bool GLWidget::loadModel(const std::string &path)
     return ok;
 }
 
+void GLWidget::setWireframe(bool enabled)
+{
+    m_renderer.setWireframe(enabled);
+    update();
+}
+
+bool GLWidget::isWireframe() const
+{
+    return m_renderer.isWireframe();
+}
+
+size_t GLWidget::vertexCount() const
+{
+    return m_scene.vertexCount();
+}
+
+size_t GLWidget::triangleCount() const
+{
+    return m_scene.triangleCount();
+}
+
 // --------------- GL callbacks ---------------
 
 void GLWidget::initializeGL()

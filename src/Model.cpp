@@ -92,3 +92,19 @@ void Model::cleanup(QOpenGLFunctions_3_3_Core *gl)
     for (auto &mesh : m_meshes) mesh.cleanup(gl);
     m_gpuReady = false;
 }
+
+size_t Model::vertexCount() const
+{
+    size_t count = 0;
+    for (const auto &mesh : m_meshes)
+        count += mesh.vertexCount();
+    return count;
+}
+
+size_t Model::triangleCount() const
+{
+    size_t count = 0;
+    for (const auto &mesh : m_meshes)
+        count += mesh.triangleCount();
+    return count;
+}

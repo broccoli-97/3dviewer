@@ -23,3 +23,8 @@ Thumbs.db
 
 # CMake generated
 CMakeUserPresets.json
+.aider*
+
+# Qwen
+.qwen/
+CODEBUDDY.md
